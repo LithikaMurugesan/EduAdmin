@@ -4,7 +4,7 @@ exports.getActivityLogs = async (req, res, next) => {
   try {
     const { entityType, action, startDate, endDate } = req.query;
 
-    // Build filter
+
     const filter = {};
     if (entityType) filter.entityType = entityType;
     if (action) filter.action = action;
@@ -25,7 +25,7 @@ exports.getActivityLogs = async (req, res, next) => {
   }
 };
 
-// Get activity log by ID
+
 exports.getActivityLogById = async (req, res, next) => {
   try {
     const log = await ActivityLog.findById(req.params.id).populate(
