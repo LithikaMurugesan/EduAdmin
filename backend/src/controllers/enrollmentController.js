@@ -1,7 +1,7 @@
 const Enrollment = require('../models/Enrollment');
 const ActivityLog = require('../models/ActivityLog');
 
-// Get all enrollments (not deleted)
+
 exports.getEnrollments = async (req, res, next) => {
     try {
         const enrollments = await Enrollment.find({ isDeleted: false })
@@ -14,7 +14,7 @@ exports.getEnrollments = async (req, res, next) => {
     }
 };
 
-// Get all enrollments (including deleted)
+
 exports.getAllEnrollments = async (req, res, next) => {
     try {
         const enrollments = await Enrollment.find()
@@ -27,7 +27,7 @@ exports.getAllEnrollments = async (req, res, next) => {
     }
 };
 
-// Get enrollment by ID
+
 exports.getEnrollmentById = async (req, res, next) => {
     try {
         const enrollment = await Enrollment.findById(req.params.id)
@@ -42,16 +42,16 @@ exports.getEnrollmentById = async (req, res, next) => {
     }
 };
 
-// Create enrollment
+
 exports.createEnrollment = async (req, res, next) => {
     try {
         const enrollment = await Enrollment.create(req.body);
 
-        // Populate for response
+        
         await enrollment.populate('studentId', 'fullName studentId');
         await enrollment.populate('courseId', 'courseName courseCode');
 
-        // Log activity
+
         await ActivityLog.create({
             action: 'Create',
             entityType: 'Enrollment',
@@ -66,7 +66,7 @@ exports.createEnrollment = async (req, res, next) => {
     }
 };
 
-// Update enrollment
+
 exports.updateEnrollment = async (req, res, next) => {
     try {
         const enrollment = await Enrollment.findByIdAndUpdate(
@@ -81,7 +81,7 @@ exports.updateEnrollment = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Enrollment not found' });
         }
 
-        // Log activity
+
         await ActivityLog.create({
             action: 'Update',
             entityType: 'Enrollment',
@@ -96,7 +96,6 @@ exports.updateEnrollment = async (req, res, next) => {
     }
 };
 
-// Soft delete enrollment
 exports.deleteEnrollment = async (req, res, next) => {
     try {
         const enrollment = await Enrollment.findByIdAndUpdate(
@@ -108,8 +107,6 @@ exports.deleteEnrollment = async (req, res, next) => {
         if (!enrollment) {
             return res.status(404).json({ success: false, message: 'Enrollment not found' });
         }
-
-        // Log activity
         await ActivityLog.create({
             action: 'Delete',
             entityType: 'Enrollment',
@@ -124,7 +121,6 @@ exports.deleteEnrollment = async (req, res, next) => {
     }
 };
 
-// Restore enrollment
 exports.restoreEnrollment = async (req, res, next) => {
     try {
         const enrollment = await Enrollment.findByIdAndUpdate(
@@ -139,7 +135,6 @@ exports.restoreEnrollment = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Enrollment not found' });
         }
 
-        // Log activity
         await ActivityLog.create({
             action: 'Restore',
             entityType: 'Enrollment',
